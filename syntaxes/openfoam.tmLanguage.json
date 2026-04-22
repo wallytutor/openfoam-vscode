@@ -38,7 +38,7 @@
       "patterns": [
         {
           "name": "comment.line.double-slash.openfoam",
-          "match": "//.*$"
+          "match": "^\\s*//.*$"
         },
         {
           "name": "comment.block.openfoam",
@@ -102,6 +102,9 @@
           },
           "patterns": [
             {
+              "include": "#comments"
+            },
+            {
               "include": "#strings"
             },
             {
@@ -143,6 +146,9 @@
           },
           "patterns": [
             {
+              "include": "#comments"
+            },
+            {
               "include": "#strings"
             },
             {
@@ -180,6 +186,9 @@
             }
           },
           "patterns": [
+            {
+              "include": "#comments"
+            },
             {
               "include": "#strings"
             },
