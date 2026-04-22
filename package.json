@@ -2,7 +2,7 @@
   "name": "openfoam-vscode",
   "displayName": "OpenFOAM Dictionary Highlight",
   "description": "Minimal syntax highlighting for OpenFOAM dictionary files.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "WalterDalMazSilva",
   "license": "MIT",
   "homepage": "https://github.com/wallytutor/openfoam-vscode",

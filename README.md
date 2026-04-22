@@ -4,19 +4,15 @@ Minimal syntax highlighter for OpenFOAM dictionary files in VS Code.
 
 Available on [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=WalterDalMazSilva.openfoam-vscode) and installable locally (see instructions below).
 
+---
+
 ## Supported files
 
-The extension auto-detects these filenames with no manual file association:
+The extension auto-detects several filenames with no manual file association; common files such as `controlDict`, `decomposeParDict`, and `fvSolution` are included in the built-in list. You can also add custom filenames via extension settings (see below). The extension supports C-style comments, delimiters, strings, and OpenFOAM-style dictionary entries.
 
-- `controlDict`
-- `decomposeParDict`
-- `fvSolution`
+It is a design choice to use exact filename matching to identify OpenFOAM dictionary files, as opposed to relying on file extensions or more complex heuristics. Also, the file list is not exhaustive and can be extended by users as needed, as their field of expertise may require highlighting of additional dictionary files than the ones provided by default.
 
-It also includes a broader built-in OpenFOAM filename list (for example `fvSchemes`, `boundary`, `U`, and `p_rgh`) for out-of-the-box highlighting.
-
-## Add custom filenames in settings.json
-
-You can add your own dictionary file names via extension settings:
+You can add your own dictionary file names via extension settings (in `settings.json`), using the following configuration:
 
 - Setting key: `openfoamDictHighlight.additionalFilenames`
 - Type: array of strings
@@ -26,39 +22,27 @@ Example:
 
 ```json
 {
-  "openfoamDictHighlight.additionalFilenames": [
-    "mySolverDict",
-    "regionProperties",
-    "combustionProperties"
-  ]
+    "openfoamDictHighlight.additionalFilenames": [
+        "mySolverDict",
+        "regionProperties",
+        "combustionProperties"
+    ]
 }
 ```
 
-After changing this setting, the extension reapplies language detection to currently open files.
-If an open file no longer matches the built-in or configured names, it is reset to plaintext.
+After changing this setting, the extension reapplies language detection to currently open files. If an open file no longer matches the built-in or configured names, it is reset to plaintext.
 
 Alternative fallback (if you prefer native VS Code association behavior) is to use `files.associations`, for example:
 
 ```json
 {
-  "files.associations": {
-    "**/mySolverDict": "openfoam-dict"
-  }
+    "files.associations": {
+        "**/mySolverDict": "openfoam-dict"
+    }
 }
 ```
 
-## Highlighting rules
-
-- C-style comments:
-  - `// line comments`
-  - `/* block comments */`
-- Delimiters:
-  - braces `{}`
-  - brackets `[]`
-  - parentheses `()`
-- Double-quoted strings:
-  - `"system"`
-- Dictionary entries using OpenFOAM-style space-separated assignment and `;` terminators
+---
 
 ## Install locally
 
@@ -71,17 +55,8 @@ Alternative fallback (if you prefer native VS Code association behavior) is to u
 
 ### Option 2: Package as VSIX and install
 
-1. Install `vsce`:
+1. Install `vsce` by running `npm install -g @vscode/vsce` in your terminal.
 
-   ```powershell
-   npm install -g @vscode/vsce
-   ```
-
-2. Package this extension:
-
-   ```powershell
-  cd <path-to-openfoam-vscode>
-   vsce package
-   ```
+2. From this directory, package this extension with `vsce package`
 
 3. In VS Code, run `Extensions: Install from VSIX...` and select the generated `.vsix` file.
