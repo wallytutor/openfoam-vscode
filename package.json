@@ -1,10 +1,18 @@
 {
-  "name": "xl-foam-highlight",
+  "name": "openfoam-vscode",
   "displayName": "OpenFOAM Dictionary Highlight",
   "description": "Minimal syntax highlighting for OpenFOAM dictionary files.",
   "version": "0.0.1",
-  "publisher": "xperimental",
+  "publisher": "WalterDalMazSilva",
   "license": "MIT",
+  "homepage": "https://github.com/wallytutor/openfoam-vscode",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wallytutor/openfoam-vscode.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wallytutor/openfoam-vscode/issues"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -32,7 +40,7 @@
           "items": {
             "type": "string"
           },
-          "description": "Additional exact file names to detect as OpenFOAM dictionaries.",
+          "description": "Additional exact file names (case-insensitive) to detect as OpenFOAM dictionaries.",
           "uniqueItems": true
         }
       }

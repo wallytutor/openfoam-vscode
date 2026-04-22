@@ -2,6 +2,8 @@
 
 Minimal syntax highlighter for OpenFOAM dictionary files in VS Code.
 
+Available on [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=WalterDalMazSilva.openfoam-vscode) and installable locally (see instructions below).
+
 ## Supported files
 
 The extension auto-detects these filenames with no manual file association:
@@ -18,7 +20,7 @@ You can add your own dictionary file names via extension settings:
 
 - Setting key: `openfoamDictHighlight.additionalFilenames`
 - Type: array of strings
-- Match mode: exact file name match
+- Match mode: exact file name, case-insensitive match
 
 Example:
 
@@ -33,6 +35,7 @@ Example:
 ```
 
 After changing this setting, the extension reapplies language detection to currently open files.
+If an open file no longer matches the built-in or configured names, it is reset to plaintext.
 
 Alternative fallback (if you prefer native VS Code association behavior) is to use `files.associations`, for example:
 
@@ -64,7 +67,7 @@ Alternative fallback (if you prefer native VS Code association behavior) is to u
 1. Open VS Code.
 2. Open Extensions view.
 3. Select `...` (More Actions) -> `Install from Location...`.
-4. Pick this folder: `xl-foam-highlight`.
+4. Pick this extension's root folder.
 
 ### Option 2: Package as VSIX and install
 
@@ -77,7 +80,7 @@ Alternative fallback (if you prefer native VS Code association behavior) is to u
 2. Package this extension:
 
    ```powershell
-   cd xl-foam-highlight
+  cd <path-to-openfoam-vscode>
    vsce package
    ```
 

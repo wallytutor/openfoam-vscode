@@ -2,3 +2,4 @@
 .vscode/**
 **/*.ps1
 **/*.log
+sandbox.md

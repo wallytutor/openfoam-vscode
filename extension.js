@@ -2,9 +2,10 @@ const path = require("path");
 const vscode = require("vscode");
 
 const LANGUAGE_ID = "openfoam-dict";
+const FALLBACK_LANGUAGE_ID = "plaintext";
 const CONFIG_NAMESPACE = "openfoamDictHighlight";
 const CONFIG_KEY = "additionalFilenames";
-const EXTENSION_ID = "xperimental.xl-foam-highlight";
+const EXTENSION_ID = "WalterDalMazSilva.openfoam-vscode";
 
 function normalizeFilename(name) {
     return name.trim().toLowerCase();
@@ -57,15 +58,16 @@ function isMatch(document, knownFilenames) {
 }
 
 async function applyLanguageIfMatch(document, knownFilenames) {
-    if (!isMatch(document, knownFilenames)) {
+    const matches = isMatch(document, knownFilenames);
+
+    if (matches && document.languageId !== LANGUAGE_ID) {
+        await vscode.languages.setTextDocumentLanguage(document, LANGUAGE_ID);
         return;
     }
 
-    if (document.languageId === LANGUAGE_ID) {
-        return;
+    if (!matches && document.languageId === LANGUAGE_ID) {
+        await vscode.languages.setTextDocumentLanguage(document, FALLBACK_LANGUAGE_ID);
     }
-
-    await vscode.languages.setTextDocumentLanguage(document, LANGUAGE_ID);
 }
 
 async function applyLanguageToOpenDocuments(knownFilenames) {
