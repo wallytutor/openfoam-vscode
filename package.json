@@ -1,101 +1,109 @@
 {
-  "name": "openfoam-vscode",
-  "displayName": "OpenFOAM Dictionary Highlight",
-  "description": "Minimal syntax highlighting for OpenFOAM dictionary files.",
-  "version": "0.0.2",
-  "publisher": "WalterDalMazSilva",
-  "license": "MIT",
-  "homepage": "https://github.com/wallytutor/openfoam-vscode",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/wallytutor/openfoam-vscode.git"
-  },
-  "bugs": {
-    "url": "https://github.com/wallytutor/openfoam-vscode/issues"
-  },
-  "engines": {
-    "vscode": "^1.85.0"
-  },
-  "categories": [
-    "Programming Languages"
-  ],
-  "keywords": [
-    "openfoam",
-    "cfd",
-    "dictionary",
-    "syntax",
-    "highlight"
-  ],
-  "main": "./extension.js",
-  "activationEvents": [
-    "onStartupFinished"
-  ],
-  "contributes": {
-    "configuration": {
-      "title": "OpenFOAM Dictionary Highlight",
-      "properties": {
-        "openfoamDictHighlight.additionalFilenames": {
-          "type": "array",
-          "default": [],
-          "items": {
-            "type": "string"
-          },
-          "description": "Additional exact file names (case-insensitive) to detect as OpenFOAM dictionaries.",
-          "uniqueItems": true
-        }
-      }
+    "name": "openfoam-vscode",
+    "displayName": "OpenFOAM Dictionary Highlight",
+    "description": "Minimal syntax highlighting for OpenFOAM dictionary files.",
+    "version": "0.0.3",
+    "publisher": "WalterDalMazSilva",
+    "license": "MIT",
+    "homepage": "https://github.com/wallytutor/openfoam-vscode",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/wallytutor/openfoam-vscode.git"
     },
-    "languages": [
-      {
-        "id": "openfoam-dict",
-        "aliases": [
-          "OpenFOAM Dictionary",
-          "openfoam-dict"
-        ],
-        "filenames": [
-            "boundary",
-            "cellRegionAddressing",
-            "cellToRegion",
-            "cellZones",
-            "faceRegionAddressing",
-            "faces",
-            "neighbour",
-            "owner",
-            "pointRegionAddressing",
-            "points",
-
-            "p",
-            "U",
-            "T",
-            "k",
-            "omega",
-            "nut",
-            "alphat",
-            "p_rgh",
-            "g",
-            "pRef",
-
-            "createPatchDict",
-            "momentumTransport",
-            "physicalProperties",
-            "controlDict",
-            "decomposeParDict",
-            "fvConstraints",
-            "fvSolution",
-            "fvSchemes",
-            "functions",
-
-            "userParameters"
-        ],
-        "configuration": "./language-configuration.json"
-      }
+    "bugs": {
+        "url": "https://github.com/wallytutor/openfoam-vscode/issues"
+    },
+    "engines": {
+        "vscode": "^1.85.0"
+    },
+    "categories": [
+        "Programming Languages"
     ],
-    "grammars": [
-      {
-        "language": "openfoam-dict",
-        "scopeName": "source.openfoam-dict",
-        "path": "./syntaxes/openfoam.tmLanguage.json"
-      }
-    ]
-  }
+    "keywords": [
+        "openfoam",
+        "cfd",
+        "dictionary",
+        "syntax",
+        "highlight"
+    ],
+    "main": "./extension.js",
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "contributes": {
+        "configuration": {
+            "title": "OpenFOAM Dictionary Highlight",
+            "properties": {
+                "openfoamDictHighlight.additionalFilenames": {
+                    "type": "array",
+                    "default": [],
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Additional exact file names (case-insensitive) to detect as OpenFOAM dictionaries.",
+                    "uniqueItems": true
+                },
+                "openfoamDictHighlight.additionalFilenamePatterns": {
+                    "type": "array",
+                    "default": [
+                        "^physicalProperties(?:\\..+)?$"
+                    ],
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Additional JavaScript regex patterns for file names, matched case-insensitively against the basename. Example: ^physicalProperties(?:\\..+)?$",
+                    "uniqueItems": true
+                }
+            }
+        },
+        "languages": [
+            {
+                "id": "openfoam-dict",
+                "aliases": [
+                    "OpenFOAM Dictionary",
+                    "openfoam-dict"
+                ],
+                "filenames": [
+                    "boundary",
+                    "cellRegionAddressing",
+                    "cellToRegion",
+                    "cellZones",
+                    "faceRegionAddressing",
+                    "faces",
+                    "neighbour",
+                    "owner",
+                    "pointRegionAddressing",
+                    "points",
+                    "p",
+                    "U",
+                    "T",
+                    "k",
+                    "omega",
+                    "nut",
+                    "alphat",
+                    "p_rgh",
+                    "g",
+                    "pRef",
+                    "createPatchDict",
+                    "momentumTransport",
+                    "physicalProperties",
+                    "controlDict",
+                    "decomposeParDict",
+                    "fvConstraints",
+                    "fvSolution",
+                    "fvSchemes",
+                    "functions",
+                    "userParameters"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "openfoam-dict",
+                "scopeName": "source.openfoam-dict",
+                "path": "./syntaxes/openfoam.tmLanguage.json"
+            }
+        ]
+    }
 }

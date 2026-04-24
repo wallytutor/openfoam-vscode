@@ -4,7 +4,8 @@ const vscode = require("vscode");
 const LANGUAGE_ID = "openfoam-dict";
 const FALLBACK_LANGUAGE_ID = "plaintext";
 const CONFIG_NAMESPACE = "openfoamDictHighlight";
-const CONFIG_KEY = "additionalFilenames";
+const CONFIG_FILENAMES_KEY = "additionalFilenames";
+const CONFIG_PATTERNS_KEY = "additionalFilenamePatterns";
 const EXTENSION_ID = "WalterDalMazSilva.openfoam-vscode";
 
 function normalizeFilename(name) {
@@ -27,7 +28,7 @@ function getBuiltInFilenames() {
 function getConfiguredFilenames() {
     const configured = vscode.workspace
         .getConfiguration(CONFIG_NAMESPACE)
-        .get(CONFIG_KEY, []);
+        .get(CONFIG_FILENAMES_KEY, []);
 
     if (!Array.isArray(configured)) {
         return [];
@@ -39,26 +40,71 @@ function getConfiguredFilenames() {
         .filter(Boolean);
 }
 
-function buildFilenameSet() {
-    const all = [...getBuiltInFilenames(), ...getConfiguredFilenames()];
-    return new Set(all.map(normalizeFilename));
+function getConfiguredFilenamePatterns() {
+    const configured = vscode.workspace
+        .getConfiguration(CONFIG_NAMESPACE)
+        .get(CONFIG_PATTERNS_KEY, []);
+
+    if (!Array.isArray(configured)) {
+        return [];
+    }
+
+    return configured
+        .filter((value) => typeof value === "string")
+        .map((value) => value.trim())
+        .filter(Boolean);
+}
+
+function buildFilenameMatchers() {
+    const filenames = new Set(
+        [...getBuiltInFilenames(), ...getConfiguredFilenames()].map(normalizeFilename)
+    );
+    const invalidPatterns = [];
+    const patterns = getConfiguredFilenamePatterns().flatMap((pattern) => {
+        try {
+            return [new RegExp(pattern, "i")];
+        } catch {
+            invalidPatterns.push(pattern);
+            return [];
+        }
+    });
+
+    return {
+        filenames,
+        patterns,
+        invalidPatterns,
+    };
+}
+
+function warnAboutInvalidPatterns(invalidPatterns) {
+    if (invalidPatterns.length === 0) {
+        return;
+    }
+
+    const quotedPatterns = invalidPatterns.map((pattern) => `"${pattern}"`).join(", ");
+    void vscode.window.showWarningMessage(
+        `OpenFOAM Dictionary Highlight ignored invalid regex pattern(s): ${quotedPatterns}`
+    );
 }
 
 function isEligibleDocument(document) {
     return document.uri.scheme === "file";
 }
 
-function isMatch(document, knownFilenames) {
+function isMatch(document, filenameMatchers) {
     if (!isEligibleDocument(document)) {
         return false;
     }
 
     const basename = normalizeFilename(path.basename(document.fileName));
-    return knownFilenames.has(basename);
+    return (
+        filenameMatchers.filenames.has(basename)
+        || filenameMatchers.patterns.some((pattern) => pattern.test(basename))
+    );
 }
 
-async function applyLanguageIfMatch(document, knownFilenames) {
-    const matches = isMatch(document, knownFilenames);
+async function applyLanguageIfMatch(document, filenameMatchers) {
+    const matches = isMatch(document, filenameMatchers);
 
     if (matches && document.languageId !== LANGUAGE_ID) {
         await vscode.languages.setTextDocumentLanguage(document, LANGUAGE_ID);
@@ -70,27 +116,28 @@ async function applyLanguageIfMatch(document, knownFilenames) {
     }
 }
 
-async function applyLanguageToOpenDocuments(knownFilenames) {
+async function applyLanguageToOpenDocuments(filenameMatchers) {
     const tasks = vscode.workspace.textDocuments.map((document) =>
-        applyLanguageIfMatch(document, knownFilenames)
+        applyLanguageIfMatch(document, filenameMatchers)
     );
     await Promise.allSettled(tasks);
 }
 
 function activate(context) {
-    let knownFilenames = buildFilenameSet();
+    let filenameMatchers = buildFilenameMatchers();
+    warnAboutInvalidPatterns(filenameMatchers.invalidPatterns);
 
-    void applyLanguageToOpenDocuments(knownFilenames);
+    void applyLanguageToOpenDocuments(filenameMatchers);
 
     context.subscriptions.push(
         vscode.workspace.onDidOpenTextDocument((document) => {
-            void applyLanguageIfMatch(document, knownFilenames);
+            void applyLanguageIfMatch(document, filenameMatchers);
         })
     );
 
     context.subscriptions.push(
         vscode.workspace.onDidRenameFiles(() => {
-            void applyLanguageToOpenDocuments(knownFilenames);
+            void applyLanguageToOpenDocuments(filenameMatchers);
         })
     );
 
@@ -100,8 +147,9 @@ function activate(context) {
                 return;
             }
 
-            knownFilenames = buildFilenameSet();
-            void applyLanguageToOpenDocuments(knownFilenames);
+            filenameMatchers = buildFilenameMatchers();
+            warnAboutInvalidPatterns(filenameMatchers.invalidPatterns);
+            void applyLanguageToOpenDocuments(filenameMatchers);
         })
     );
 }
